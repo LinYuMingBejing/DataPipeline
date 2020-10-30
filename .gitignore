@@ -1,0 +1,15 @@
+env/
+
+# Airflow
+logs
+airflow.db
+unittests.cfg
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
