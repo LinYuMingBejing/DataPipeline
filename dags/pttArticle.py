@@ -25,8 +25,6 @@ headers = Variable.get('User-Agent')
 
 # MySQL config
 mysqlhook = MySqlHook(mysql_conn_id='PTT')
-cursor    = connection.cursor()
-
 
 def create_table(**context):
     execution_date = context['execution_date'].strftime('%Y%m%d %H:%M:%S')
