@@ -3,7 +3,7 @@
 * Ubuntu: 16.04 
 * Python: 3.6.2
 * Crawl Framework: Scrapy
-* Database: MySQL, Redis
+* Database: MySQL, Redis, Hbase
 * Pipeline: Airflow
 
 
@@ -48,7 +48,9 @@ $ airflow initdb
 ```
 
 * Enviroment Variables
-vim airflow.cfg
+```
+$ vim airflow.cfg
+```
 
 ```
 AIRFLOW_CONFIG=/root/Article/airflow.cfg
