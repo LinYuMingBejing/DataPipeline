@@ -60,6 +60,7 @@ def pull(table_name, columns, start_day, prefix_key):
     list_day = [prefix + day_time  for prefix in prefix_key]
 
     # Load data from habse
+    
     for index, kdata in enumerate(list_day):
         prefix = kdata
         logging.info(f'Scan prefix = {prefix}')
@@ -69,9 +70,7 @@ def pull(table_name, columns, start_day, prefix_key):
             data[b'prefix:rowkey'] = key
             data_in = dict((k.decode('utf8').split(':')[1], v.decode('utf8')) for k, v in data.items())
             dat.append(data_in)
-
-        keys = [k.decode('utf8').split(':')[1] for k in columns]
-        keys.insert(0, 'rowkey')
+        logging.info('chunck size = %s', len(dat))
 
 
 def pullData(**context):
