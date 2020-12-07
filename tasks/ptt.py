@@ -1,29 +1,36 @@
 from airflow.hooks.mysql_hook import MySqlHook
+from sqlalchemy.orm import sessionmaker
+from datetime import datetime
 
-from model.PTT import Info
+# MySQL config
+mysqlhook = MySqlHook(mysql_conn_id = 'PTT')
 
-mysqlhook = MySqlHook(mysql_conn_id='PTT')
+engine_kwargs = {'connect_args': {'charset': 'utf8mb4'}}
+Session = sessionmaker(bind=mysqlhook.get_sqlalchemy_engine(engine_kwargs))
+
+session = Session()
 
 
-def upsert(row):
-    title = row['title']
-    author = row['author']
-    board = row['board']
-    hits = row['hits']
+def upsert(row, table):
     url = row['url']
-    posted_date = row['timestamp']
+    hits = row['hits']
+    title = row['title']
+    board = row['board']
+    author = row['author']
+    posted_date = row['timestamp'].split('T')[0]
     description = row['description']
 
-    record = session.query(Info).filter_by(title=title, author=author, board=board,
-                                          url=url).first()
+    record = session.query(table).filter_by(title=title, author=author, board=board, url=url).first()
+    
     if not record:
-        record = Info()
+        record = table()
 
+    record.url = url
+    record.hits = hits
     record.title = title
     record.author = author
     record.board = board
-    record.hits = hits
-    record.posted_date = posted_date
+    record.posted_date = datetime.strptime(posted_date, '%Y-%m-%d')
     record.description = description
 
     session.merge(record)
@@ -44,6 +51,10 @@ def create_table(tablename):
           `url` varchar(4096) COLLATE utf8mb4_unicode_ci NOT NULL,
           `posted_date` timestamp COLLATE utf8mb4_unicode_ci NOT NULL,
           `description` varchar(4096) COLLATE utf8mb4_unicode_ci NOT NULL,
-            """.format(tablename)
+          `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          PRIMARY KEY (`id`)
+        )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci""".format(tablename)
+
     cursor.execute(sql)
     cursor.close()
