@@ -3,6 +3,8 @@ from airflow.operators import BashOperator
 
 from datetime import datetime, timedelta
 import pendulum
+import os
+
 
 local_tz = pendulum.timezone('Asia/Taipei')
 default_args = {
@@ -13,10 +15,10 @@ default_args = {
 }
 
 
-with DAG('Booking.com', default_args=default_args,schedule_interval='0 9 1 * *') as dag:
+with DAG('Booking.com', default_args=default_args,schedule_interval='@daily') as dag:
     
     t2 = BashOperator(
         task_id = 'scrapy_hotel_info',
-        bash_command = 'cd hotel && scrapy crawl booking',
+        bash_command = f'cd {os.environ.get("AIRFLOW_HOME")}/hotel && scrapy crawl booking',
     )
             
