@@ -90,7 +90,7 @@ pytzdata==2020.1
 PyYAML==5.3.1
 queuelib==1.5.0
 requests==2.24.0
-Scrapy==2.4.0
+Scrapy==2.6.1
 service-identity==18.1.0
 setproctitle==1.1.10
 six==1.15.0
